@@ -1,0 +1,189 @@
+All required inputs are present in input folder
+---------------------------------------------
+Important Note : 
+1.tweets folder in input has to be kept in hadoop/home folder before running Items 1 and 2 (WordCount, WordCooccurence) in How to run java files
+2.rd folder has to kept in the same folder where we run Wordcount2.ipynb notebook
+3.latin folder in input has to be kept in hadoop/home folder before running Items 3 and 4 (Lemma,Trigram and Bigram) in How to run java files
+4.Also note that the sample output for Lemma,Trigram and Bigram [Items 3,4] in How to run java files are from text_one_and_two_and_lemmatizer folder
+---------------------------------------------
+
+-----------------------------------------------
+All Sample outputs are present in output folder
+-----------------------------------------------
+WordCount output - What to do 1) -- [out_wordcount]
+WordCooccurence pairs method output -- What to do 2) -- [out_pairs]
+WordCooccurence stripes method output -- What to do 2) -- [out_stripes]
+Lemma output - What to do 3) -- [out_lemma]
+Trigram - Featured Activity 2 output -- What to do 4) -- [out_gram3]
+Bigram - Featured Activity 2 output -- What to do 4) -- [out_gram2]
+
+
+---------------------------------------------
+Java Code Files
+---------------------------------------------
+WordCount output - What to do 1) -- [WordCount.java]
+WordCooccurence pairs method output -- What to do 2) -- [WordCooc.java]
+WordCooccurence stripes method output -- What to do 2) -- [WordStr.java]
+Lemma output - What to do 3) -- [Lemma.java]
+Trigram - Featured Activity 2 output -- What to do 4) -- [mco.java]
+Bigram - Featured Activity 2 output -- What to do 4) -- [gramt.java]
+
+---------------------------------------------
+Java Jar Files
+---------------------------------------------
+WordCount output - What to do 1) -- [wc.jar]
+WordCooccurence pairs method output -- What to do 2) -- [wco.jar]
+WordCooccurence stripes method output -- What to do 2) -- [wcs.jar]
+Lemma output - What to do 3) -- [Lemmaj.jar]
+Trigram - Featured Activity 2 output -- What to do 4) -- [gram3.jar]
+Bigram - Featured Activity 2 output -- What to do 4) -- [gram2.jar]
+
+
+-------------------------------------
+How to run java files
+-------------------------------------
+1>> What's Trending
+
+1. Run Wordcount1.ipynb r file in rcode folder in jupyter notebook, to collect tweets and generate the output file. Put this output file in a tweets folder in hadoop home.[This file is present in input folder as "tweets"]
+
+Go to javacode folder
+2.Run the following commands to generate the word count - 
+a.start-hadoop.sh
+b.hdfs dfs -mkdir –p ~/input/
+c.hdfs dfs -put ~/tweets/ ~/input
+d.hadoop com.sun.tools.javac.Main WordCount.java
+e.jar cf wc.jar WordCount*.class
+f.hadoop jar wc.jar WordCount ~/input/tweets ~/out_wordcount
+g.hdfs dfs -get ~/out_wordcount
+
+3.put the out_wordcount file obtained in the previous step in a new rd folder. ****Important**** : Make sure that the rd folder is present in the same folder as Wordcount2.ipynb
+
+4. Run Wordcount2.ipynb r file in rcode folder in jupyter notebook, to generate the word cloud.
+
+Ouput Format:
+From running WordCount.java - Word<tab>Number of occurence of that word
+example : Buffalo 102
+From running Wordcount2.ipynb - WordCloud of tweets.  
+
+Where to find output:
+From running WordCooc.java - file : part-r-00000 in folder out_wordcount
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+
+
+2>> Word Cooccurence
+Go to javacode folder
+
+1. Pairs Algorithm
+
+1.Run the following commands to generate the word cooccurence with pairs method - 
+a.start-hadoop.sh
+b.hdfs dfs -mkdir –p ~/input/
+c.hdfs dfs -put ~/tweets/ ~/input
+d.hadoop com.sun.tools.javac.Main WordCooc.java
+e.jar cf wco.jar WordCooc*.class
+f.hadoop jar wco.jar WordCooc ~/input/tweets ~/out_pairs
+g.hdfs dfs -get ~/out_pairs
+
+Ouput Format:
+From running WordCooc.java - Wordpair<tab>Number of occurence of that wordpair
+example : Buffalo Bills 10
+
+2. Stripes Algorithm
+
+1.Run the following commands to generate the word cooccurence with stripes method- 
+a.start-hadoop.sh
+b.hdfs dfs -mkdir –p ~/input/
+c.hdfs dfs -put ~/tweets/ ~/input
+d.hadoop com.sun.tools.javac.Main WordStr.java
+e.jar cf wcs.jar WordStr*.class
+f.hadoop jar wcs.jar WordStr ~/input/tweets ~/out_stripes
+g.hdfs dfs -get ~/out_stripes
+
+Ouput Format:
+From running WordStr.java - Word<tab>HashMap of neighbor and number of times neighbor word is the neighbor of the original word.[original word, {neighbor = neighbor's coocurence count with that word}]
+ex : Buffalo  {Bills = 4}{NFL = 1}{Football = 3}
+
+Where to find output:
+From running WordCooc.java - file : part-r-00000 in folder out_pairs
+From running WordStr.java - file : part-r-00000 in folder out_stripes
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+
+3>> Featured Activity 1 - Lemma
+
+Go to javacode folder
+
+1.Run the following commands to generate the Lemma locations in latin files - 
+a.start-hadoop.sh
+b.hdfs dfs -mkdir –p ~/input/
+c.hdfs dfs -put ~/latin/ ~/input
+d.hadoop com.sun.tools.javac.Main Lemma.java
+e.jar cf Lemmaj.jar Lemma*.class
+f.hadoop jar Lemmaj.jar Lemma ~/input/latin ~/out_lemma
+g.hdfs dfs -get ~/out_lemma
+
+Ouput Format:
+From running Lemma.java - 
+for each word in the text
+normalize the word spelling by replacing j with i and v with u throughout
+
+check lemmatizer for the normalized spelling of the word
+
+if the word appears in the lemmatizer
+obtain the list of lemmas for this word
+for each lemma, create a key/value pair from the lemma and the location where the
+word was found
+
+else
+create a key/value pair from the normalized spelling and
+the location where the word was found
+
+example : abditus	[[<verg. aen. 9.579>]]
+
+Where to find output:
+From running Lemma.java - file : part-r-00000 in folder out_lemma
+---------------------------------------------
+---------------------------------------------
+---------------------------------------------
+
+
+4>> Featured Activity 2
+
+Go to javacode folder
+
+1.Run the following commands to generate 3gram and locations - 
+a.start-hadoop.sh
+b.hdfs dfs -mkdir –p ~/input/
+c.hdfs dfs -put ~/latin/ ~/input
+d.hadoop com.sun.tools.javac.Main mco.java
+e.jar cf gram3.jar mco*.class
+f.hadoop jar gram3.jar mco ~/input/latin ~/out_3gram
+g.hdfs dfs -get ~/out_3gram
+
+1.Run the following commands to generate 2gram and locations - 
+a.start-hadoop.sh
+b.hdfs dfs -mkdir –p ~/input/
+c.hdfs dfs -put ~/latin/ ~/input
+d.hadoop com.sun.tools.javac.Main gramt.java
+e.jar cf gram2.jar gramt*.class
+f.hadoop jar gram2.jar gramt ~/input/latin ~/out_2gram
+g.hdfs dfs -get ~/out_2gram
+
+2.Run Activity_4.ipynb in Jupyter Notebook in rcode folder
+
+Output Format:
+From running mco.java - Lemma of all the words in the trigram(if lemma doesn't exist then the original word) and all the corresponding locations with file name.
+example : ab accessus immotus	[[<verg. aen. 3.570]]
+From running gramt.java - Lemma of all the words in the bigram(if lemma doesn't exist then the original word) and all the corresponding locations with file name.
+example : ab aether	[[<verg. aen. 8.524, <verg. aen. 11.724, <verg. aen. 11.802, <verg. aen. 7.143, <verg. aen. 12.853]]
+From running Featured_Activity_4.ipynb - Graphs plotted with Running Time vs Number of latin files used.
+
+Where to find output:
+From running mco.java - file : part-r-00000 in folder out_3gram
+From running gramt.java - file : part-r-00000 in folder out_2gram
+
+---------------------------------------------
+---------------------------------------------
